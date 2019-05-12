@@ -2,47 +2,36 @@
 #define SCHEDULER_FCFS
 
 #include <queue>
-#include <unistd.h>
 
 #include "command.cpp"
+#include "scheduler.cpp"
 
-#define SIMULATION
-#define SIM_TIME 500000 // Print delay in microseconds
-
-class Scheduler_FCFS{
+class Scheduler_FCFS:public Scheduler{
     private:
-        queue<Cmd> *cmd_queue;
     public:
-        Scheduler_FCFS(queue<Cmd> *q){
-            cmd_queue = q;
+        Scheduler_FCFS(queue<Cmd> *q):Scheduler(q){
         }
         bool is_empty(){
             return cmd_queue->size() <= 0;
         }
-        void work(){
+        virtual void work(){
             if(!is_empty()){
-                static unsigned int now_time = 0;
-                Cmd task = cmd_queue->front();
-                if(now_time >= task.arrival_time){  // Overlapped
-                    unsigned int waiting_time = task.arrival_time - now_time;
+                now_task = cmd_queue->front();          // new task
+                if(now_time >= now_task.arrival_time){  // Proc overlapped
+                    record_waiting_time(now_time - now_task.arrival_time);
                 }
-                else{                               // Idle
-                    unsigned int idle_time = task.arrival_time - now_time;
-                    now_time = task.arrival_time;
-                    cout << "Idle " << idle_time << endl;
+                else{                                   // Processor idle
+                    record_idle_time(now_task.arrival_time - now_time);
+                    now_time = now_task.arrival_time;   // Move to next task
                 }
-#ifdef SIMULATION
-                print(task, now_time);
-                usleep(SIM_TIME);
-#endif
-                now_time += task.runtime;
+
+                /* Run Task */
+                now_time += now_task.runtime;
+                record_task_complete(now_task);         // Mark task complete
                 cmd_queue->pop();
+                /* Task Finished */
             }
-        }
-        void print(Cmd task, unsigned int now_time){
-            cout << "Time: " << now_time << "\tProc: " << task.proc_name <<
-                "\tRun: " << task.runtime << endl;
-        }
+        } 
 };
 
 #endif

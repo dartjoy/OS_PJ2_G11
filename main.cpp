@@ -21,7 +21,9 @@ int main(){
         cout << "Tasks read." << endl;
         while(!fcfs.is_empty()){
             fcfs.work();
+            //fcfs.print_detail();
         }
+        fcfs.print_summary();
     }
     return 0;
 }

@@ -24,6 +24,12 @@ class Cmd{
             runtime = run;
             arrival_time = arrive;
         }
+        Cmd(){
+            proc_name = "none";
+            priority = 0;
+            runtime = 0;
+            arrival_time = 0;
+        }
 
         Cmd(string name, string p, string run, string  arrive){
             std::string::size_type sz;
