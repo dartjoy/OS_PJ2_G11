@@ -14,7 +14,7 @@ CFLAGS = -Wall -ansi
 
 all: main
 
-main: main.cpp
+main: main.cpp command.cpp scheduler_fcfs.cpp
 	$(CC) -o main main.cpp
 
 #$(LIB_FOLDER)/connection.o: $(LIB_FOLDER)/connection.h $(LIB_FOLDER)/connection.cpp 
