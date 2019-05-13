@@ -22,7 +22,7 @@ int main(){
         Scheduler_SJR sjr(&cmd_queue);
         while(!sjr.is_empty()){
             sjr.work();
-            sjr.print_detail();
+            //sjr.print_detail();
         }
         sjr.print_summary();
     }

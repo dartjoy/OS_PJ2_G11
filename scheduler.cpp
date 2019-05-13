@@ -18,12 +18,14 @@ class Batch{
         uint total_idle_time;
         uint throughput;
         uint total_turnaround_time;
+        uint context_switch;
 
-        Batch(uint waiting, uint idle, uint turn, uint count){
+        Batch(uint waiting, uint idle, uint turn, uint count, uint con){
             total_waiting_time = waiting;
             total_idle_time = idle;
             throughput = count;
             total_turnaround_time = turn;
+            context_switch = con;
         }
         Batch(){
             reset();
@@ -34,12 +36,14 @@ class Batch{
             total_idle_time = 0;
             throughput = 0;
             total_turnaround_time = 0;
+            context_switch = 0;
         } 
         void print(){
             cout << "waiting: " << total_waiting_time
                  << "\tidle_time: " << total_idle_time
                  << "\tthroughout: " << throughput
-                 << "\tturnaround: " << total_turnaround_time << endl;
+                 << "\tturnaround: " << total_turnaround_time
+                 << "\tcontext_switch: " << context_switch << endl;
         }
 };
 
@@ -55,7 +59,7 @@ class Scheduler{
         Cmd now_task = Cmd();                   // Current running task
         queue<Cmd> *cmd_queue;                  // Original cmd queue
         queue<Batch> batches;                   // Batched properties
-        Batch now_batch = Batch(0, 0, 0, 0);    // Current properties
+        Batch now_batch = Batch(0, 0, 0, 0, 0);    // Current properties
         void record_waiting_time(unsigned int waiting_t){
             now_batch.total_waiting_time += waiting_t;
             record_check_batch();
@@ -67,6 +71,10 @@ class Scheduler{
         void record_task_complete(Cmd task){
             now_batch.total_turnaround_time += (now_time - task.arrival_time);
             now_batch.throughput += 1;
+            record_check_batch();
+        }
+        void record_switch(){
+            now_batch.context_switch++;
             record_check_batch();
         }
         // If current batch excceed running time, switch to next.

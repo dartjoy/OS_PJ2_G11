@@ -1,9 +1,9 @@
 /*
- * Shortest-Job-Next Scheduling
+ * Shortest-Remaining-Time-First Scheduler
  */
 
-#ifndef SCHEDULER_SJR
-#define SCHEDULER_SJR
+#ifndef SCHEDULER_SRTF
+#define SCHEDULER_SRTF
 
 #include <queue>
 #include <vector>
@@ -22,12 +22,12 @@ bool operator>(const Cmd &a, const Cmd &b){
     return a.runtime < b.runtime;
 }
 
-class Scheduler_SJR:public Scheduler{
+class Scheduler_SRTF:public Scheduler{
     private:
         vector<Cmd> ready_queue;                 // Ready queue
 
     public:
-        Scheduler_SJR(queue<Cmd> *q):Scheduler(q){
+        Scheduler_SRTF(queue<Cmd> *q):Scheduler(q){
             make_heap(ready_queue.begin(), ready_queue.end());
         }
 
@@ -67,9 +67,23 @@ class Scheduler_SJR:public Scheduler{
                 }
 
                 /* Run Task */
-                now_time += now_task.runtime;
-                record_task_complete(now_task);         // Mark task complete
-                record_switch();
+                //now_time += now_task.runtime;
+                //record_task_complete(now_task);         // Mark task complete
+                //record_switch();
+                
+                Cmd now_cmd = cmd_queue->front();              // new task
+                uint task_start_time = now_time;
+                while( now_time <= task_start_time + now_task.runtime
+                        && !is_empty()
+                        && now_time >= now_cmd.arrival_Time ){     // Task arrive
+                    ready_queue.push_back(now_cmd);
+                    push_heap(ready_queue.begin(), ready_queue.end());
+                    cmd_queue->pop();
+                    now_time += now_cmd.arrival_time - task_start_time;
+                    //now_cmd.print();
+                    //cout << "Pushed into ready_queue" << endl;
+                    now_cmd = cmd_queue->front();          // new task
+                }
                 /* Task Finished */
             }
         } 

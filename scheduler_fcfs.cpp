@@ -25,6 +25,7 @@ class Scheduler_FCFS:public Scheduler{
                 /* Run Task */
                 now_time += now_task.runtime;
                 record_task_complete(now_task);         // Mark task complete
+                record_switch();
                 cmd_queue->pop();
                 /* Task Finished */
             }
