@@ -6,8 +6,8 @@
 #include <iomanip>
 #include "command.cpp"
     
-#define SIM_TIME 500000 // Print delay in microseconds
-#define PERFORMANCE_TIME_UNIT 10000
+#define SIM_TIME 5000 // Print delay in microseconds
+#define PERFORMANCE_TIME_UNIT 1000
 
 #define uint unsigned int
 
@@ -47,13 +47,13 @@ class Batch{
  1. Basic properties recording function
     - You need to call 'record_task_complete()' to mark completed task
  2. You can print all batched properties with 'print_summary()'
- 3. If you want to print details during schduling, call 'print_detail()' after 'work()' called*/
+ 3. If you want to print details during schduling, call 'print_detail()' after 'work()' called
+ */
 class Scheduler{
     protected:
         uint now_time;                          // The schduler time while working
         Cmd now_task = Cmd();                   // Current running task
         queue<Cmd> *cmd_queue;                  // Original cmd queue
-        queue<Cmd> ready_queue;                 // Ready queue
         queue<Batch> batches;                   // Batched properties
         Batch now_batch = Batch(0, 0, 0, 0);    // Current properties
         void record_waiting_time(unsigned int waiting_t){
@@ -85,6 +85,9 @@ class Scheduler{
             cmd_queue = q;
             now_time = 0;
         }
+        bool is_empty(){
+            return cmd_queue->size() <= 0;
+        }       
         void print_summary(){
             cout << "Total time used: " << now_time << endl
                  << "Batched time unit: " << PERFORMANCE_TIME_UNIT << endl;

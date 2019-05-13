@@ -10,7 +10,7 @@
 using namespace std;
 
 const string DATA_DIR ("./test_data");
-const string FILE_NAME("data_3.txt");
+const string FILE_NAME("data_1.txt");
 
 int main(){
     string cmd_filename = DATA_DIR + '/' + FILE_NAME;
@@ -19,12 +19,12 @@ int main(){
         cout << "ERROR! Can't open file: " << cmd_filename << endl;
     else{
         cout << "Tasks read." << endl;
-        Scheduler_SJR sjr(&cmd_queue);
-        while(!sjr.is_empty()){
-            sjr.work();
-            sjr.print_detail();
+        Scheduler_FCFS fcfs(&cmd_queue);
+        while(!fcfs.is_empty()){
+            fcfs.work();
+            //fcfs.print_detail();
         }
-        sjr.print_summary();
+        fcfs.print_summary();
     }
     return 0;
 }

@@ -11,9 +11,6 @@ class Scheduler_FCFS:public Scheduler{
     public:
         Scheduler_FCFS(queue<Cmd> *q):Scheduler(q){
         }
-        bool is_empty(){
-            return cmd_queue->size() <= 0;
-        }
         virtual void work(){
             if(!is_empty()){
                 now_task = cmd_queue->front();          // new task

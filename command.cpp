@@ -66,6 +66,14 @@ class Cmd{
         void print(){
             cout << "Proccess Name: " << proc_name << endl;
         }
+/*
+        bool operator<(const Cmd &a){
+            return priority > a.priority;
+        }
+        bool operator>(const Cmd &a){
+            return priority < a.priority;
+        }
+*/
 };
 
 #endif
