@@ -3,7 +3,9 @@
 #include <iostream>
 
 #include "command.cpp"
-#include "scheduler_srtf.cpp"
+#include "scheduler_fcfs.cpp"
+#include "scheduler_sjr.cpp"
+#include <unistd.h>
 
 using namespace std;
 
@@ -17,12 +19,12 @@ int main(){
         cout << "ERROR! Can't open file: " << cmd_filename << endl;
     else{
         cout << "Tasks read." << endl;
-        Scheduler_SRTF srtf(&cmd_queue);
-        while(!srtf.is_empty()){
-            srtf.work();
-            srtf.print_detail();
+        Scheduler_SJR sjr(&cmd_queue);
+        while(!sjr.is_empty()){
+            sjr.work();
+            //sjr.print_detail();
         }
-        srtf.print_summary();
+        sjr.print_summary();
     }
     return 0;
 }

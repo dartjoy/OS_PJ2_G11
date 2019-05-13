@@ -62,8 +62,8 @@ class Scheduler_SJR:public Scheduler{
                     record_waiting_time(now_time - now_task.arrival_time);
                 }
                 else{                                   // Processor idle
-                    now_time = now_task.arrival_time;   // Move to next task
                     record_idle_time(now_task.arrival_time - now_time);
+                    now_time = now_task.arrival_time;   // Move to next task
                 }
 
                 /* Run Task */
