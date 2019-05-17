@@ -7,7 +7,7 @@
 #include "command.cpp"
     
 #define SIM_TIME 5000 // Print delay in microseconds
-#define PERFORMANCE_TIME_UNIT 1000
+#define PERFORMANCE_TIME_UNIT 10000
 
 #define uint unsigned int
 
@@ -60,6 +60,7 @@ class Scheduler{
         queue<Cmd> *cmd_queue;                  // Original cmd queue
         queue<Batch> batches;                   // Batched properties
         Batch now_batch = Batch(0, 0, 0, 0, 0);    // Current properties
+        unsigned int batch_counter = 0;
         void record_waiting_time(unsigned int waiting_t){
             now_batch.total_waiting_time += waiting_t;
             record_check_batch();
@@ -77,14 +78,16 @@ class Scheduler{
             now_batch.context_switch++;
             record_check_batch();
         }
+        void create_new_batch(){
+            // New batch
+            batches.push(now_batch);
+            now_batch.reset();
+            batch_counter++;
+        }
         // If current batch excceed running time, switch to next.
         void record_check_batch(){
-            static unsigned int batch_counter = 0;
             if( now_time - batch_counter * PERFORMANCE_TIME_UNIT > PERFORMANCE_TIME_UNIT ){
-                // New batch
-                batches.push(now_batch);
-                now_batch.reset();
-                batch_counter++;
+                create_new_batch();
             }
         }
 
@@ -97,6 +100,7 @@ class Scheduler{
             return cmd_queue->size() <= 0;
         }       
         void print_summary(){
+            create_new_batch();     // Flush out
             cout << "Total time used: " << now_time << endl
                  << "Batched time unit: " << PERFORMANCE_TIME_UNIT << endl;
             int count = 0;

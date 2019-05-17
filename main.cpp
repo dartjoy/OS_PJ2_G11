@@ -18,7 +18,7 @@ int main(){
     else{
         cout << "Tasks read." << endl;
         Scheduler_SRTF srtf(&cmd_queue);
-        while(!srtf.is_empty()){
+        while(!srtf.is_finish()){
             srtf.work();
             srtf.print_detail();
         }
