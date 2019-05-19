@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "command.cpp"
-#include "scheduler_rr.cpp"
+#include "scheduler_priority.cpp"
 
 using namespace std;
 
@@ -17,12 +17,12 @@ int main(){
         cout << "ERROR! Can't open file: " << cmd_filename << endl;
     else{
         cout << "Tasks read." << endl;
-        Scheduler_RR rr(&cmd_queue);
-        while(!rr.is_finish()){
-            rr.work();
-            rr.print_detail();
+        Scheduler_Priority pri(&cmd_queue);
+        while(!pri.is_finish()){
+            pri.work();
+            pri.print_detail();
         }
-        rr.print_summary();
+        pri.print_summary();
     }
     return 0;
 }
