@@ -17,12 +17,14 @@ class Cmd{
         int priority;
         int runtime;
         int arrival_time;
+        int commit_time;
 
         Cmd(string name, int p, int run, int arrive){
             proc_name = name;
             priority = p;
             runtime = run;
             arrival_time = arrive;
+            commit_time = arrival_time;
         }
         Cmd(){
             proc_name = "none";
@@ -37,6 +39,7 @@ class Cmd{
             priority = std::stoi(p, &sz);
             runtime = std::stoi(run, &sz);
             arrival_time = std::stoi(arrive, &sz);
+            commit_time = arrival_time;
         }
 
         static bool load_cmd(vector<string>* cmd, string l){

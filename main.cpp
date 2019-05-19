@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "command.cpp"
-#include "scheduler_srtf.cpp"
+#include "scheduler_rr.cpp"
 
 using namespace std;
 
@@ -17,12 +17,12 @@ int main(){
         cout << "ERROR! Can't open file: " << cmd_filename << endl;
     else{
         cout << "Tasks read." << endl;
-        Scheduler_SRTF srtf(&cmd_queue);
-        while(!srtf.is_finish()){
-            srtf.work();
-            srtf.print_detail();
+        Scheduler_RR rr(&cmd_queue);
+        while(!rr.is_finish()){
+            rr.work();
+            rr.print_detail();
         }
-        srtf.print_summary();
+        rr.print_summary();
     }
     return 0;
 }

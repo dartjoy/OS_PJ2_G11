@@ -39,10 +39,10 @@ class Batch{
             context_switch = 0;
         } 
         void print(){
-            cout << "waiting: " << total_waiting_time
+            cout << "avg_waiting: " << total_waiting_time/throughput
                  << "\tidle_time: " << total_idle_time
                  << "\tthroughout: " << throughput
-                 << "\tturnaround: " << total_turnaround_time
+                 << "\tturnaround: " << total_turnaround_time/throughput
                  << "\tcontext_switch: " << context_switch << endl;
         }
 };
@@ -70,7 +70,7 @@ class Scheduler{
             record_check_batch();
         }
         void record_task_complete(Cmd task){
-            now_batch.total_turnaround_time += (now_time - task.arrival_time);
+            now_batch.total_turnaround_time += (now_time - task.commit_time);
             now_batch.throughput += 1;
             record_check_batch();
         }
