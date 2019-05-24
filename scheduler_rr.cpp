@@ -7,13 +7,14 @@
 #include "scheduler.cpp"
 
 #define TIME_SLICE 5
-#define DEBUG
+//#define DEBUG
 
 class Scheduler_RR:public Scheduler{
     private:
         queue<Cmd> ready_queue;
     public:
-        Scheduler_RR(queue<Cmd> *q):Scheduler(q){
+        Scheduler_RR(queue<Cmd> q, string dataset_name):Scheduler(q){
+            set_output_file("rr" + dataset_name);
         }
         bool is_finish(){
             return is_empty() && ready_queue.size()<=0;
@@ -22,8 +23,8 @@ class Scheduler_RR:public Scheduler{
             if(!is_finish()){
                 // There is no task in ready_queue -> Idle
                 if(ready_queue.size()<=0){
-                    now_task = cmd_queue->front();
-                    cmd_queue->pop();
+                    now_task = cmd_queue.front();
+                    cmd_queue.pop();
                     record_idle_time(now_task.arrival_time - now_time);
                     now_time = now_task.arrival_time;
                     record_switch();
@@ -33,15 +34,15 @@ class Scheduler_RR:public Scheduler{
                 }
                 uint rest_runtime = (now_task.runtime < TIME_SLICE) ? now_task.runtime : TIME_SLICE;
                 // Task running with interrupt (Never preempt)
-                Cmd next_task = cmd_queue->front();
+                Cmd next_task = cmd_queue.front();
                 while(!is_empty() && 
                         next_task.arrival_time <= now_time + rest_runtime ){
                     ready_queue.push(next_task);        // Push the incoming task into ready_queue
-                    cmd_queue->pop();
-                    next_task = cmd_queue->front();
+                    cmd_queue.pop();
+                    next_task = cmd_queue.front();
                 }
                 // Run the task
-                record_waiting_time(now_time - now_task.arrival_time);
+                record_waiting_time(now_task);
                 now_time += rest_runtime;
                 now_task.arrival_time = now_time;
                 now_task.runtime -= rest_runtime;

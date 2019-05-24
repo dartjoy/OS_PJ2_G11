@@ -4,27 +4,31 @@
 
 #include "command.cpp"
 #include "scheduler_fcfs.cpp"
-#include "scheduler_sjr.cpp"
-#include <unistd.h>
+//#include "scheduler_sjr.cpp"
+//#include "scheduler_srtf.cpp"
+//#include "scheduler_priority.cpp"
+//#include "scheduler_rr.cpp"
 
 using namespace std;
 
 const string DATA_DIR ("./test_data");
-const string FILE_NAME("data_1.txt");
+string FILE_NAME("data_1");
 
-int main(){
-    string cmd_filename = DATA_DIR + '/' + FILE_NAME;
+int main(int argc, char *argv[]){
+    if(argv[1])
+        FILE_NAME = string(argv[1]);
+    string cmd_filename = DATA_DIR + '/' + FILE_NAME + ".txt";
     queue<Cmd> cmd_queue;
     if(!Cmd::load_from_file(&cmd_queue, cmd_filename))
         cout << "ERROR! Can't open file: " << cmd_filename << endl;
     else{
-        cout << "Tasks read." << endl;
-        Scheduler_FCFS fcfs(&cmd_queue);
-        while(!fcfs.is_empty()){
-            fcfs.work();
-            //fcfs.print_detail();
+        Scheduler_FCFS scheduler(cmd_queue, FILE_NAME);
+        while(!scheduler.is_finish()){
+            scheduler.work();
+            //scheduler.print_detail();
         }
-        fcfs.print_summary();
+        scheduler.print_summary();
+
     }
     return 0;
 }

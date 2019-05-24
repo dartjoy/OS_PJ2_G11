@@ -1,0 +1,2 @@
+time_used, throughput, idle, waiting, avg_response, variance_response, turnaround, context_switch
+2036,998,1,611,317,3109273,319,999

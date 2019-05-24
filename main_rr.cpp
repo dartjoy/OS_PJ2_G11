@@ -4,10 +4,10 @@
 
 #include "command.cpp"
 //#include "scheduler_fcfs.cpp"
-#include "scheduler_sjr.cpp"
+//#include "scheduler_sjr.cpp"
 //#include "scheduler_srtf.cpp"
 //#include "scheduler_priority.cpp"
-//#include "scheduler_rr.cpp"
+#include "scheduler_rr.cpp"
 
 using namespace std;
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     if(!Cmd::load_from_file(&cmd_queue, cmd_filename))
         cout << "ERROR! Can't open file: " << cmd_filename << endl;
     else{
-        Scheduler_SJR scheduler(cmd_queue, FILE_NAME);
+        Scheduler_RR scheduler(cmd_queue, FILE_NAME);
         while(!scheduler.is_finish()){
             scheduler.work();
             //scheduler.print_detail();

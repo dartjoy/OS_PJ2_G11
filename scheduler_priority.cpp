@@ -10,7 +10,7 @@
 
 #include "command.cpp"
 #include "scheduler.cpp"
-#define DEBUG
+//#define DEBUG
 bool operator<(const Cmd &a, const Cmd &b){
     if(a.runtime == b.runtime)
         return a.arrival_time > b.arrival_time;
@@ -27,8 +27,9 @@ class Scheduler_Priority:public Scheduler{
         vector<Cmd> ready_queue;                 // Ready queue
 
     public:
-        Scheduler_Priority(queue<Cmd> *q):Scheduler(q){
+        Scheduler_Priority(queue<Cmd> q, string dataset_name):Scheduler(q){
             make_heap(ready_queue.begin(), ready_queue.end());
+            set_output_file("priority" + dataset_name);
         }
 
         bool is_finish(){
@@ -36,18 +37,18 @@ class Scheduler_Priority:public Scheduler{
         }
         virtual void work(){
             if(now_task.runtime <= 0){
-                Cmd next_cmd = cmd_queue->front();
+                Cmd next_cmd = cmd_queue.front();
                 while( !is_empty() && now_time >= next_cmd.arrival_time ){
-                    cmd_queue->pop();
+                    cmd_queue.pop();
                     ready_queue.push_back(next_cmd);
                     push_heap(ready_queue.begin(), ready_queue.end());
-                    next_cmd = cmd_queue->front();
+                    next_cmd = cmd_queue.front();
                 }
                 if(ready_queue.size() <= 0){
                     // No more task in ready queue -> Idle
                     if( !is_empty() ){
-                        now_task = cmd_queue->front();          // new task
-                        cmd_queue->pop();
+                        now_task = cmd_queue.front();          // new task
+                        cmd_queue.pop();
 
                         record_idle_time(now_task.arrival_time - now_time);
                         now_time = now_task.arrival_time;       // Move to next task
@@ -63,17 +64,17 @@ class Scheduler_Priority:public Scheduler{
 #ifdef DEBUG
                     cout << "Pop from ready_queue: " << now_task.proc_name << endl;
 #endif
-                    record_waiting_time(now_time - now_task.arrival_time);
+                    record_waiting_time(now_task);
                 }
             }
             // Task still alive
             else{
                 // The next task that may interrupt
-                Cmd next_task = cmd_queue->front();                                    
+                Cmd next_task = cmd_queue.front();                                    
                 // A new Task arrive during a running task ->  determine whether to preempt
                 if( !is_empty()
                         && now_time + now_task.runtime >= next_task.arrival_time){
-                    cmd_queue->pop();
+                    cmd_queue.pop();
 #ifdef DEBUG
                     cout << "A task insert: " << next_task.proc_name << endl;
 #endif
@@ -118,22 +119,24 @@ class Scheduler_Priority:public Scheduler{
                 // There is no task in cmd_queue, but ready_queue remains
                 else{
                     if(now_task.runtime > 0){
-                        record_waiting_time(now_time - now_task.arrival_time);
+                        record_waiting_time(now_task);
                         now_time += now_task.runtime;
                         now_task.runtime = 0;
                         record_task_complete(now_task);
                     }
-
-                    now_task = ready_queue.front();
-                    pop_heap(ready_queue.begin(), ready_queue.end());  // new task
-                    ready_queue.pop_back();
+/*
+                    if(ready_queue.size()>0){
+                        now_task = ready_queue.front();
+                        pop_heap(ready_queue.begin(), ready_queue.end());  // new task
+                        ready_queue.pop_back();
 #ifdef DEBUG
-                    cout << "Pop from ready_queue: " << now_task.proc_name << endl;
+                        cout << "Pop from ready_queue: " << now_task.proc_name << endl;
 #endif
-                    record_waiting_time(now_time - now_task.arrival_time);
-                    now_time += now_task.runtime;
-                    now_task.runtime = 0;
-                    record_task_complete(now_task);
+                        record_waiting_time(now_task);
+                        now_time += now_task.runtime;
+                        now_task.runtime = 0;
+                        record_task_complete(now_task);
+                    }*/
                 }
             }
             /*

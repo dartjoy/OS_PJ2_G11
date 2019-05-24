@@ -4,18 +4,23 @@ CC = g++
 # LIB_FOLDER = ./lib
 
 # LINK_FILE = -l pthread
+OUTPUT_DIR = output
 CFLAGS = -Wall -ansi 
 # CONFIG_FILE = config.h
 # Wall: Show warning messages
 # ansi: Enhance portability
 
-#all:
-#	g++ -o $(SERVER_FOLDER)/server $(SERVER_FOLDER)/server.cpp -l jsoncpp -o $(CLIENT_FOLDER)/client $(CLIENT_FOLDER)/client.cpp -l jsoncpp
+FNAME = main_
+SCH = fcfs sjr srtf priority rr
+TAR = $(foreach n, $(SCH), $(FNAME)$(n))
 
-all: main
+all: $(TAR)
 
-main: main.cpp command.cpp scheduler.cpp scheduler_fcfs.cpp scheduler_sjr.cpp
-	$(CC) -o main main.cpp
+$(TAR): %: %.cpp
+	$(CC) -o $(OUTPUT_DIR)/$@ $^
+
+
+
 
 #$(LIB_FOLDER)/connection.o: $(LIB_FOLDER)/connection.h $(LIB_FOLDER)/connection.cpp 
 #	$(CC) -c $(LIB_FOLDER)/connection.cpp 
@@ -23,4 +28,4 @@ main: main.cpp command.cpp scheduler.cpp scheduler_fcfs.cpp scheduler_sjr.cpp
 
 
 clean:
-	rm main
+	rm $(TAR)
